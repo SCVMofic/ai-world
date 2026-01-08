@@ -1,11 +1,24 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { RouterView } from 'vue-router'
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <RouterView />
 </template>
 
-<style scoped></style>
+<style>
+/* Global resets or base styles can go here if not in main.css */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #0d1117; /* Dark theme default */
+  color: #c9d1d9;
+  overflow: hidden; /* Prevent scroll on full screen app */
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+}
+</style>
