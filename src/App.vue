@@ -7,14 +7,17 @@ import { RouterView } from 'vue-router'
 </template>
 
 <style>
-/* Global resets or base styles can go here if not in main.css */
+/* Global resets using variables */
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Inter', sans-serif;
-  background-color: #0d1117; /* Dark theme default */
-  color: #c9d1d9;
-  overflow: hidden; /* Prevent scroll on full screen app */
+  font-family: var(--font-family);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 
 #app {

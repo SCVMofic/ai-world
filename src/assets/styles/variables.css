@@ -1,0 +1,58 @@
+/* Global Variables & Theming */
+:root {
+  /* Light Theme Defaults */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+
+  --border-color: #e2e8f0;
+
+  --primary-color: #0ea5e9;
+  --primary-hover: #0284c7;
+
+  --danger-color: #ef4444;
+  --success-color: #22c55e;
+
+  --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(0, 0, 0, 0.05);
+
+  --font-family: 'Inter', system-ui, sans-serif;
+
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+[data-theme='dark'] {
+  /* Dark Theme Overrides */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+
+  --border-color: #334155;
+
+  --card-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+  --glass-bg: rgba(15, 23, 42, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  margin: 0;
+  line-height: 1.5;
+}
+
+button {
+  font-family: inherit;
+}
