@@ -1,178 +1,262 @@
 <script setup lang="ts">
+import { ref, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSettingsStore } from '@/stores/settings'
+import { Play, FolderOpen, Settings, Globe } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
+import SettingsModal from '@/components/SettingsModal.vue'
 
 const router = useRouter()
 const settings = useSettingsStore()
+const { t, locale } = useI18n()
+
+const showSettingsManager = ref(false)
 
 const handleNewGame = () => {
   console.log('Starting New Game...')
-  // In Phase 2, this will route to GameView
-  // router.push('/game');
 }
-
 const handleLoadGame = () => {
   console.log('Loading Game...')
 }
-
 const handleSettings = () => {
-  console.log('Opening Settings...')
+  showSettingsManager.value = true
+}
+
+// Language Toggle
+const toggleLang = () => {
+  const next = locale.value === 'en' ? 'zh' : 'en'
+  locale.value = next
+  localStorage.setItem('user-locale', next)
 }
 </script>
 
 <template>
-  <div class="home-container">
-    <div class="background-overlay"></div>
+  <div
+    class="home-container"
+    :style="{
+      backgroundImage: settings.state.backgroundImage
+        ? `url(${settings.state.backgroundImage})`
+        : 'none',
+      backgroundColor: !settings.state.backgroundImage
+        ? settings.state.colors.bgPrimary
+        : 'transparent',
+    }"
+  >
+    <div class="background-overlay" v-if="settings.state.backgroundImage"></div>
 
-    <div class="content">
-      <h1 class="title">AI WORLD</h1>
-      <p class="subtitle">Neural Simulation Sandbox</p>
+    <!-- Top Right Language Switcher -->
+    <button class="lang-switch-fixed" @click="toggleLang" :title="t('settings.language')">
+      <Globe :size="20" />
+      <span>{{ locale.toUpperCase() }}</span>
+    </button>
+
+    <div class="content glass-panel" v-if="!showSettingsManager">
+      <!-- ARTISTIC TITLE SECTION -->
+      <div class="title-section">
+        <h1
+          class="title"
+          :style="{
+            fontFamily: settings.state.titleFontFamily,
+          }"
+        >
+          {{ t('home.title') }}
+        </h1>
+        <p class="subtitle" :style="{ fontFamily: settings.state.bodyFontFamily }">
+          {{ t('home.subtitle') }}
+        </p>
+        <div
+          class="title-decoration"
+          :style="{ backgroundColor: settings.state.colors.primary }"
+        ></div>
+      </div>
 
       <div class="menu">
         <button class="menu-btn primary" @click="handleNewGame">
-          <span class="icon">►</span> New World
+          <Play class="icon" :size="20" />
+          <span class="btn-text" :style="{ fontFamily: settings.state.bodyFontFamily }">{{
+            t('home.new_world')
+          }}</span>
         </button>
+
         <button class="menu-btn" @click="handleLoadGame">
-          <span class="icon">📂</span> Continue
+          <FolderOpen class="icon" :size="20" />
+          <span class="btn-text" :style="{ fontFamily: settings.state.bodyFontFamily }">{{
+            t('home.continue')
+          }}</span>
         </button>
+
         <button class="menu-btn" @click="handleSettings">
-          <span class="icon">⚙</span> Settings
+          <Settings class="icon" :size="20" />
+          <span class="btn-text" :style="{ fontFamily: settings.state.bodyFontFamily }">{{
+            t('home.settings')
+          }}</span>
         </button>
       </div>
 
-      <div class="footer">
-        <span>v0.1.0 Pre-Alpha</span>
-        <span class="divider">|</span>
-        <span>Phase 1: Environment</span>
+      <div class="footer" :style="{ fontFamily: settings.state.bodyFontFamily }">
+        <span class="version">{{ t('home.version') }}</span>
+        <span class="status-dot"></span>
+        <span class="phase">{{ t('home.phase') }}</span>
       </div>
     </div>
+
+    <!-- Settings Modal Component -->
+    <SettingsModal :isOpen="showSettingsManager" @close="showSettingsManager = false" />
   </div>
 </template>
 
 <style scoped>
 .home-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at center, #1f242d 0%, #0d1117 100%);
-  color: white;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: var(--text-primary);
+  position: relative;
   overflow: hidden;
 }
-
-/* Dynamic background effect */
 .background-overlay {
   position: absolute;
   top: 0;
   left: 0;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.03), transparent 60%);
-  animation: pulse 10s infinite alternate;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(1.2);
-    opacity: 0.8;
-  }
+.lang-switch-fixed {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.8rem;
+  backdrop-filter: blur(4px);
+  transition: all 0.2s;
+}
+.lang-switch-fixed:hover {
+  background: var(--primary-color);
+  color: var(--bg-primary);
+  border-color: var(--primary-color);
 }
 
 .content {
   position: relative;
   z-index: 10;
-  text-align: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-  backdrop-filter: blur(5px);
-  padding: 4rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-  background: rgba(13, 17, 23, 0.6);
+  gap: 3rem;
+  width: 420px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+  padding: 3.5rem;
+  border-radius: 8px;
+  transition: all 0.3s;
 }
 
+/* Artistic Text Enhancements */
 .title {
   font-size: 4rem;
-  font-weight: 800;
-  letter-spacing: 0.5rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -1px;
   margin: 0;
-  background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%);
+  background: linear-gradient(135deg, var(--text-primary) 30%, var(--text-secondary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .subtitle {
-  font-size: 1.2rem;
-  color: #64748b;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  letter-spacing: 4px;
+  margin-top: 10px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.2rem;
-  margin-top: -1.5rem;
-  margin-bottom: 2rem;
+}
+
+.title-decoration {
+  width: 40px;
+  height: 4px;
+  margin-top: 1.5rem;
 }
 
 .menu {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width: 100%;
-  min-width: 240px;
 }
 
 .menu-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
+  justify-content: flex-start;
+  gap: 1.5rem;
+  padding: 1.2rem 1.5rem;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 1rem 2rem;
-  color: #cbd5e1;
-  font-size: 1.1rem;
-  font-weight: 500;
-  letter-spacing: 1px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 2px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
   border-radius: 4px;
 }
 
 .menu-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 4px solid var(--primary-color);
+  padding-left: calc(1.5rem - 4px);
+  color: var(--text-primary);
+  transform: translateX(5px);
 }
 
 .menu-btn.primary {
-  background: linear-gradient(90deg, #0ea5e9, #0284c7);
-  border: none;
-  color: white;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  background: rgba(var(--primary-color), 0.1);
 }
-
 .menu-btn.primary:hover {
-  background: linear-gradient(90deg, #38bdf8, #0ea5e9);
-  box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
+  background: var(--primary-color);
+  color: var(--bg-primary);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
 
 .footer {
-  margin-top: 3rem;
-  font-size: 0.8rem;
-  color: #475569;
+  margin-top: auto;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
   display: flex;
+  align-items: center;
   gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  justify-content: center;
+  opacity: 0.7;
 }
-
-.divider {
-  color: #334155;
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 5px #22c55e;
 }
 </style>
