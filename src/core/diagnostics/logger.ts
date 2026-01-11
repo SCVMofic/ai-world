@@ -18,14 +18,17 @@ class Logger {
   private write(level: LogLevel, payload: LogPayload) {
     if (!this.shouldLog(level)) return
 
-    console[level]({
-      time: new Date().toISOString(),
-      level,
-      module: payload.module ?? 'GLOBAL',
-      message: payload.message,
-      data: payload.data,
-      context: payload.context,
-    })
+    console[level](
+      new Date().toISOString(), // 时间
+      level, // 级别
+      payload.module ?? 'GLOBAL', // 模块
+      {
+        // JSON 数据
+        message: payload.message,
+        data: payload.data,
+        context: payload.context,
+      },
+    )
   }
 
   debug(message: string, data?: unknown, context?: Record<string, unknown>, module?: string) {
