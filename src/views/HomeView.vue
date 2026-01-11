@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSettingsStore } from '@/stores/settings'
 import { Play, FolderOpen, Settings, Globe } from 'lucide-vue-next'
@@ -14,6 +14,7 @@ const showSettingsManager = ref(false)
 
 const handleNewGame = () => {
   console.log('Starting New Game...')
+  router.push({ name: 'world-map' })
 }
 const handleLoadGame = () => {
   console.log('Loading Game...')
