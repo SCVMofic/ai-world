@@ -16,12 +16,15 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
+    "@types/seedrandom": "^3.0.8",
     "axios": "^1.13.2",
     "idb": "^8.0.3",
     "json5": "^2.2.3",
     "lucide-vue-next": "^0.562.0",
     "pinia": "^3.0.4",
+    "pixi.js": "^8.15.0",
     "sass": "^1.97.2",
+    "seedrandom": "^3.0.5",
     "uuid": "^13.0.0",
     "vue": "^3.5.26",
     "vue-i18n": "^9.14.4",
