@@ -4,6 +4,7 @@ interface LogPayload {
   message: string
   data?: unknown
   context?: Record<string, unknown>
+  module?: string
 }
 
 class Logger {
@@ -20,24 +21,40 @@ class Logger {
     console[level]({
       time: new Date().toISOString(),
       level,
-      ...payload,
+      module: payload.module ?? 'GLOBAL',
+      message: payload.message,
+      data: payload.data,
+      context: payload.context,
     })
   }
 
-  debug(message: string, data?: unknown, context?: Record<string, unknown>) {
-    this.write('debug', { message, data, context })
+  debug(message: string, data?: unknown, context?: Record<string, unknown>, module?: string) {
+    this.write('debug', { message, data, context, module })
   }
 
-  info(message: string, data?: unknown, context?: Record<string, unknown>) {
-    this.write('info', { message, data, context })
+  info(message: string, data?: unknown, context?: Record<string, unknown>, module?: string) {
+    this.write('info', { message, data, context, module })
   }
 
-  warn(message: string, data?: unknown, context?: Record<string, unknown>) {
-    this.write('warn', { message, data, context })
+  warn(message: string, data?: unknown, context?: Record<string, unknown>, module?: string) {
+    this.write('warn', { message, data, context, module })
   }
 
-  error(message: string, data?: unknown, context?: Record<string, unknown>) {
-    this.write('error', { message, data, context })
+  error(message: string, data?: unknown, context?: Record<string, unknown>, module?: string) {
+    this.write('error', { message, data, context, module })
+  }
+
+  withModule(module: string) {
+    return {
+      debug: (message: string, data?: unknown, context?: Record<string, unknown>) =>
+        this.debug(message, data, context, module),
+      info: (message: string, data?: unknown, context?: Record<string, unknown>) =>
+        this.info(message, data, context, module),
+      warn: (message: string, data?: unknown, context?: Record<string, unknown>) =>
+        this.warn(message, data, context, module),
+      error: (message: string, data?: unknown, context?: Record<string, unknown>) =>
+        this.error(message, data, context, module),
+    }
   }
 }
 
